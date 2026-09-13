@@ -1,11 +1,58 @@
 ---
+import { getCollection } from 'astro:content';
+
+const menu = (await getCollection('navigation'))[0].data;
 ---
 <header class="site-header">
 	<a class="logo" href="#top">De <span>Vishal</span></a>
-	<nav aria-label="Hoofdnavigatie">
-		<a href="tentoonstellingen.html">Tentoonstellingen</a>
-		<a href="over.html">Over De Vishal</a>
-		<a href="bezoek.html">Bezoek</a>
-		<button class="menu-button" type="button" aria-label="Menu openen">+</button>
-	</nav>
+	<div class="site-menu">
+		<button class="menu-button" type="button" aria-expanded="false" aria-controls="site-menu-panel">
+			<span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+			<span class="menu-label">Menu</span>
+		</button>
+		<div class="menu-panel" id="site-menu-panel" hidden>
+			<div class="menu-panel-heading">
+				<p class="menu-kicker">De Vishal / navigatie</p>
+				<button class="menu-close" type="button" aria-label="Menu sluiten">Sluiten <span aria-hidden="true">&times;</span></button>
+			</div>
+			<nav aria-label="Hoofdnavigatie">
+				<ul class="menu-list">
+					{menu.items.map((item) => <li class="menu-group">
+						<a href={item.url}>{item.title}</a>
+						<ul>
+							{item.children.map((child) => <li><a href={child.url}>{child.title}</a></li>)}
+						</ul>
+					</li>)}
+				</ul>
+			</nav>
+			<div class="menu-panel-footer">
+				{menu.quickLinks.map((link) => <a href={link.url}>{link.title}</a>)}
+				{menu.socialLinks.map((link) => <a href={link.url}>{link.title}</a>)}
+			</div>
+		</div>
+	</div>
 </header>
+
+<script>
+	const menuButton = document.querySelector('.menu-button');
+	const menuPanel = document.querySelector('#site-menu-panel');
+	const menuClose = document.querySelector('.menu-close');
+
+	function setMenuOpen(isOpen) {
+		if (!menuButton || !menuPanel) return;
+		menuButton.setAttribute('aria-expanded', String(isOpen));
+		menuPanel.hidden = !isOpen;
+		document.body.classList.toggle('menu-is-open', isOpen);
+		if (isOpen) menuClose?.focus();
+	}
+
+	menuButton?.addEventListener('click', () => setMenuOpen(menuPanel?.hidden ?? true));
+	menuClose?.addEventListener('click', () => setMenuOpen(false));
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') setMenuOpen(false);
+	});
+	document.addEventListener('click', (event) => {
+		if (menuPanel?.hidden || (event.target instanceof Node && (menuPanel?.contains(event.target) || menuButton?.contains(event.target)))) return;
+		setMenuOpen(false);
+	});
+</script>

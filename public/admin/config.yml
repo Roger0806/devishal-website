@@ -49,3 +49,35 @@ collections:
       - { label: "Alt-tekst", name: "alt", widget: "string" }
       - { label: "Bijschrift", name: "caption", widget: "string" }
       - { label: "Positie klasse", name: "className", widget: "select", options: ["one", "two", "three", "four", "five", "six"] }
+
+  - name: "navigation"
+    label: "Menu navigatie"
+    files:
+      - name: "menu"
+        label: "Menu-inhoud"
+        file: "src/content/navigation/menu.md"
+        fields:
+          - label: "Hoofdonderdelen"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "Titel", name: "title", widget: "string" }
+              - { label: "Link", name: "url", widget: "string" }
+              - label: "Subonderdelen"
+                name: "children"
+                widget: "list"
+                fields:
+                  - { label: "Titel", name: "title", widget: "string" }
+                  - { label: "Link", name: "url", widget: "string" }
+          - label: "Extra links"
+            name: "quickLinks"
+            widget: "list"
+            fields:
+              - { label: "Titel", name: "title", widget: "string" }
+              - { label: "Link", name: "url", widget: "string" }
+          - label: "Sociale links"
+            name: "socialLinks"
+            widget: "list"
+            fields:
+              - { label: "Titel", name: "title", widget: "string" }
+              - { label: "Link", name: "url", widget: "string" }

@@ -40,4 +40,18 @@ const paintings = defineCollection({
 	}),
 });
 
-export const collections = { exhibitions, news, gallery, paintings };
+const navigationLink = z.object({
+	title: z.string(),
+	url: z.string().url(),
+});
+
+const navigation = defineCollection({
+	loader: glob({ pattern: '**/*.md', base: './src/content/navigation' }),
+	schema: z.object({
+		items: z.array(navigationLink.extend({ children: z.array(navigationLink) })),
+		quickLinks: z.array(navigationLink),
+		socialLinks: z.array(navigationLink),
+	}),
+});
+
+export const collections = { exhibitions, news, gallery, paintings, navigation };
