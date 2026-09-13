@@ -21,4 +21,23 @@ const news = defineCollection({
 	}),
 });
 
-export const collections = { exhibitions, news };
+const gallery = defineCollection({
+	loader: glob({ pattern: '**/*.md', base: './src/content/gallery' }),
+	schema: z.object({
+		image: z.string(),
+		alt: z.string(),
+		caption: z.string(),
+	}),
+});
+
+const paintings = defineCollection({
+	loader: glob({ pattern: '**/*.md', base: './src/content/paintings' }),
+	schema: z.object({
+		image: z.string(),
+		alt: z.string(),
+		caption: z.string(),
+		className: z.string(),
+	}),
+});
+
+export const collections = { exhibitions, news, gallery, paintings };

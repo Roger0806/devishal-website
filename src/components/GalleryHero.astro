@@ -1,12 +1,21 @@
 ---
+import { getCollection } from 'astro:content';
+
+const gallery = (await getCollection('gallery')).sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
+const artworkPositions = [
+	{ className: 'artwork-a', spin: -170, slide: -90 },
+	{ className: 'artwork-b', spin: 125, slide: 110 },
+	{ className: 'artwork-c', spin: 210, slide: 150 },
+	{ className: 'artwork-d', spin: -120, slide: -130 },
+];
 ---
 <section class="gallery-journey" aria-label="Interactieve galerie">
 	<div class="gallery-stage">
 		<div class="stage-label"><p class="kicker">De Vishal / Haarlem</p><h1>Ruimte<br>voor kunst.</h1></div>
-		<figure class="artwork artwork-a" data-spin="-170" data-slide="-90"><img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=700&q=85" alt="Abstract schilderij met warme kleuren" decoding="async"><figcaption>01 / kleurstudie</figcaption></figure>
-		<figure class="artwork artwork-b" data-spin="125" data-slide="110"><img src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=800&q=85" alt="Abstract schilderij in rood en blauw"><figcaption>02 / zonder titel</figcaption></figure>
-		<figure class="artwork artwork-c" data-spin="210" data-slide="150"><img src="https://images.unsplash.com/photo-1547891654-e66ed7ebb968?auto=format&fit=crop&w=650&q=85" alt="Kleurrijk modern kunstwerk"><figcaption>03 / beweging</figcaption></figure>
-		<figure class="artwork artwork-d" data-spin="-120" data-slide="-130"><img src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=650&q=85" alt="Schilderij met organische vormen"><figcaption>04 / vorm en ritme</figcaption></figure>
+		{gallery.map((item, index) => {
+			const position = artworkPositions[index];
+			return <figure class={`artwork ${position.className}`} data-spin={position.spin} data-slide={position.slide}><img src={item.data.image} alt={item.data.alt} decoding="async"><figcaption>{item.data.caption}</figcaption></figure>;
+		})}
 		<p class="stage-note">Scroll door de ruimte. De werken reageren op jouw beweging.</p><span class="scroll-mark">Beweeg</span>
 	</div>
 </section>

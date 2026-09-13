@@ -28,3 +28,24 @@ collections:
       - { label: "Datum", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
       - { label: "Titel", name: "title", widget: "string" }
       - { label: "Beschrijving", name: "description", widget: "text" }
+
+  - name: "gallery"
+    label: "Galerij afbeeldingen"
+    folder: "src/content/gallery"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Afbeelding", name: "image", widget: "image" }
+      - { label: "Alt-tekst", name: "alt", widget: "string" }
+      - { label: "Bijschrift", name: "caption", widget: "string" }
+
+  - name: "paintings"
+    label: "Schilderijen kunstenaarssectie"
+    folder: "src/content/paintings"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Afbeelding", name: "image", widget: "image" }
+      - { label: "Alt-tekst", name: "alt", widget: "string" }
+      - { label: "Bijschrift", name: "caption", widget: "string" }
+      - { label: "Positie klasse", name: "className", widget: "select", options: ["one", "two", "three", "four", "five", "six"] }
