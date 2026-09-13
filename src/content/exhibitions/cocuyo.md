@@ -1,5 +1,5 @@
 ---
-room: Grote zaal
+room: Kleine zaal
 title: cocuyo
 description: Herinneringen aan een Colombiaanse koffieboerderij waar Ana
   Tomimori en Carlos Guzman zeven jaar woonden en werkten.
