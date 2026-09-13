@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import GalleryHero from '../components/GalleryHero.astro'
+import Exhibitions from '../components/Exhibitions.astro'
+import AboutBand from '../components/AboutBand.astro'
+import NewsList from '../components/NewsList.astro'
+import MembersSection from '../components/MembersSection.astro'
+import Support from '../components/Support.astro'
+import Newsletter from '../components/Newsletter.astro'
+import Footer from '../components/Footer.astro'
+---
+<Layout>
+	<Header />
+	<main id="top">
+		<GalleryHero />
+		<Exhibitions />
+		<AboutBand />
+		<NewsList />
+		<MembersSection />
+		<Support />
+		<Newsletter />
+	</main>
+	<Footer />
+
+	<script>
+		function initAnimations() {
+			const journey = document.querySelector('.gallery-journey');
+			const stage = document.querySelector('.gallery-stage');
+			const label = document.querySelector('.stage-label');
+			const note = document.querySelector('.stage-note');
+			const scrollMark = document.querySelector('.scroll-mark');
+			const artworks = document.querySelectorAll('.artwork');
+			const membersJourney = document.querySelector('.members-journey');
+			const paintings = document.querySelectorAll('.painting');
+			const artistCards = document.querySelectorAll('.artist-card');
+			const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			let scrollDistance = 0;
+			let membersScrollDistance = 0;
+			let frameRequested = false;
+
+			function measureJourney() {
+				scrollDistance = journey ? Math.max(1, journey.offsetHeight - window.innerHeight) : 1;
+				membersScrollDistance = membersJourney ? Math.max(1, membersJourney.offsetHeight - window.innerHeight) : 1;
+			}
+
+			function updateGallery() {
+				if (!journey || !stage) return;
+				const progress = reduceMotion ? 0 : Math.min(1, Math.max(0, window.scrollY / scrollDistance));
+				const eased = progress * progress * (3 - 2 * progress);
+				artworks.forEach((artwork) => {
+					const spin = Number(artwork.dataset.spin) * eased;
+					const slide = Number(artwork.dataset.slide) * eased;
+					artwork.style.transform = `translate3d(calc(var(--x) + ${slide}px), calc(var(--y) - ${eased * 8}vh), 0) rotate(calc(var(--r) + ${spin}deg)) scale(${1 + eased * .6})`;
+					artwork.style.opacity = `${1 - Math.max(0, eased - .72) * 3.5}`;
+				});
+				if (label) { label.style.transform = `translate3d(${-eased * 90}px, ${-eased * 80}px, 0) scale(${1 - eased * .16})`; label.style.opacity = `${1 - eased}`; }
+				if (note) { note.style.transform = `translate3d(${eased * 80}px, ${eased * 70}px, 0)`; note.style.opacity = `${1 - eased}`; }
+				if (scrollMark) scrollMark.style.opacity = `${1 - eased * 2}`;
+				stage.style.backgroundColor = `rgb(${247 - Math.round(eased * 8)}, ${247 - Math.round(eased * 8)}, ${243 - Math.round(eased * 8)})`;
+			}
+
+			function updateMembers() {
+				if (!membersJourney) return;
+				const sectionProgress = (window.scrollY - membersJourney.offsetTop) / membersScrollDistance;
+				const progress = reduceMotion ? 0 : Math.min(1, Math.max(0, sectionProgress));
+				const eased = progress * progress * (3 - 2 * progress);
+				paintings.forEach((painting, index) => {
+					const depth = Number(painting.dataset.depth);
+					const direction = index % 2 ? -1 : 1;
+					painting.style.transform = `translate(${depth * eased * 95}px, ${-eased * 70 * direction}px) rotate(${depth * eased * 34}deg) scale(${1 + eased * .16})`;
+					painting.style.opacity = `${1 - Math.max(0, eased - .82) * 5}`;
+				});
+				artistCards.forEach((card, index) => {
+					const start = index * .24 + .18;
+					const cardProgress = Math.min(1, Math.max(0, (progress - start) / .28));
+					const cardEased = cardProgress * cardProgress * (3 - 2 * cardProgress);
+					card.style.transform = `translateY(${(1 - cardEased) * 50}px) rotate(${(index - 1) * (1 - cardEased) * 3}deg)`;
+					card.style.opacity = `${cardEased}`;
+				});
+			}
+
+			function update() {
+				if (frameRequested) return;
+				frameRequested = true;
+				window.requestAnimationFrame(() => { updateGallery(); updateMembers(); frameRequested = false; });
+			}
+			window.addEventListener('scroll', update, { passive: true });
+			window.addEventListener('resize', () => { measureJourney(); update(); }, { passive: true });
+			measureJourney();
+			updateGallery();
+			updateMembers();
+		}
+
+		if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAnimations, { once: true });
+		else initAnimations();
+	</script>
+</Layout>

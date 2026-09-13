@@ -1,0 +1,18 @@
+---
+import { getCollection } from 'astro:content';
+const exhibitions = await getCollection('exhibitions');
+---
+<section class="exhibitions" id="expo">
+	<div class="exhibitions-heading"><h2>Nu te zien.</h2><p>Actuele tentoonstellingen van De Vishal<br>12 september — 18 oktober 2026.</p></div>
+	<div class="exhibition-list">
+		{exhibitions.map((item, i) => (
+			<article class="exhibition-card">
+				<span class="exhibition-number">{String(i + 1).padStart(2, '0')} / {item.data.room}</span>
+				<h3>{item.data.title}</h3>
+				<p>{item.data.description}</p>
+				<p class="meta">{item.data.dates}</p>
+				<a href={item.data.link}>Lees meer &#8594;</a>
+			</article>
+		))}
+	</div>
+</section>
